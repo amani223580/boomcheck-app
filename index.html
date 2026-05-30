@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BoomCheck - Uchambuzi wa Mikopo</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; padding-bottom: 70px; }
+        .app-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 20px 15px; text-align: center; border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .app-brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 5px; }
+        .app-logo { width: 40px; height: 40px; background-color: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; color: white; }
+        .app-title { font-size: 22px; font-weight: 700; }
+        .app-tagline { font-size: 12px; color: #e0e0e0; }
+        .container { padding: 15px; max-width: 500px; margin: 0 auto; }
+        .card { background-color: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-title { font-size: 16px; font-weight: 600; color: #1e3c72; margin-bottom: 15px; border-left: 4px solid #ff9900; padding-left: 8px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; color: #555; }
+        .form-control { width: 100%; padding: 12px; border: 1.5px solid #dcdcdc; border-radius: 10px; font-size: 14px; background-color: #fafafa; }
+        .btn-primary { background: linear-gradient(135deg, #ff9900 0%, #e68a00 100%); color: white; border: none; width: 100%; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; }
+        .btn-secondary { background: #1e3c72; color: white; border: none; width: 100%; padding: 14px; font-size: 16px; font-weight: 600; border-radius: 10px; cursor: pointer; margin-top: 10px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 60px; background-color: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e0e0e0; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #888; font-size: 11px; font-weight: 500; width: 33%; height: 100%; cursor: pointer; }
+        .nav-item.active { color: #ff9900; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+        .app-page { display: none; }
+        .app-page.active { display: block; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: #f4f6f9; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #e0e0e0; }
+        .stat-num { font-size: 20px; font-weight: bold; color: #1e3c72; }
+        .stat-label { font-size: 11px; color: #666; }
+        #admin-dashboard { display: none; }
+        #admin-login { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="app-header">
+        <div class="app-brand">
+            <div class="app-logo">B</div>
+            <div class="app-title">BoomCheck</div>
+        </div>
+        <div class="app-tagline">Mfumo wa Uchambuzi wa Vigezo</div>
+    </div>
+
+    <div class="container">
+        <!-- PAGE 1: PRE-CHECKER -->
+        <div id="page-checker" class="app-page active">
+            <div class="card">
+                <div class="card-title">Taarifa Binafsi & Nyaraka</div>
+                <form id="checkerForm" onsubmit="goToPayment(event)">
+                    <div class="form-group">
+                        <label>Majina Kamili (Kama yalivyo kwenye Vyeti)</label>
+                        <input type="text" class="form-control" placeholder="Mfano: Amani Maba" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Namba ya NIDA (Au Namba ya Risiti ya NIDA)</label>
+                        <input type="text" class="form-control" placeholder="Ingiza Namba hapa" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Je, una Cheti cha Kuzaliwa (RITA)?</label>
+                        <select class="form-control" required>
+                            <option value="ndio">Ndio, ninacho</option>
+                            <option value="hapana">Hapana / Bado nakitafuta</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Hali ya Kijamii (Wazazi)</label>
+                        <select class="form-control" required>
+                            <option value="normal">Wote wapo hai</option>
+                            <option value="orphan">Yatima (Mmoja au wote)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Kamilisha Uchambuzi (Tsh 500)</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- PAGE 2: PAYMENTS -->
+        <div id="page-pay" class="app-page">
+            <div class="card">
+                <div class="card-title">Kamilisha Malipo</div>
+                <p style="font-size: 13px; margin-bottom: 15px;">Ili kuona majibu ya uchambuzi wa mfumo, kamilisha malipo madogo ya uhakiki.</p>
+                <div class="stat-box" style="margin-bottom: 15px; background: #fff3e0; border-color: #ffcc80;">
+                    <p style="font-size: 14px; font-weight: bold;">Lipa Namba (Airtel Money)</p>
+                    <h2 style="color: #e60000; letter-spacing: 2px;">136854317</h2>
+                    <p style="font-size: 12px; color: #666; margin-top: 5px;">Jina: Polymath Tech Hub</p>
+                </div>
+                <div class="form-group">
+                    <label>Ingiza Namba yako ya Simu kufanya malipo</label>
+                    <input type="tel" class="form-control" placeholder="07XXXXXXXX">
+                </div>
+                <button class="btn-primary" onclick="alert('Inachakata malipo na mfumo wetu wa siri...')">Thibitisha Malipo Sasa</button>
+            </div>
+        </div>
+
+        <!-- PAGE 3: ADMIN PANEL -->
+        <div id="page-admin" class="app-page">
+            <div class="card" id="admin-login">
+                <div class="card-title">Ingia (Mmiliki Tu)</div>
+                <div class="form-group">
+                    <label>Neno la Siri (Password)</label>
+                    <input type="password" id="adminPass" class="form-control" placeholder="Ingiza password">
+                </div>
+                <button class="btn-secondary" onclick="checkAdmin()">Ingia Ndani</button>
+            </div>
+
+            <div id="admin-dashboard">
+                <div class="card">
+                    <div class="card-title">Dashboard ya Mapato</div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-num">Tsh 45,500</div>
+                            <div class="stat-label">Mapato ya Leo</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-num">91</div>
+                            <div class="stat-label">Waliotumia Mfumo</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Pakia Mwongozo Mpya (Guidebook)</div>
+                    <div class="form-group">
+                        <label>Upload HESLB Guidebook (PDF)</label>
+                        <input type="file" class="form-control" accept="application/pdf">
+                    </div>
+                    <button class="btn-primary" onclick="alert('Mwongozo umepakiwa na mfumo umesoma vigezo vipya!')">Update Vigezo vya Mfumo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('page-checker', this)">
+            <span class="nav-icon">📝</span>
+            <span>Uchambuzi</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('page-pay', this)">
+            <span class="nav-icon">💳</span>
+            <span>Malipo</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('page-admin', this)">
+            <span class="nav-icon">🛡️</span>
+            <span>Admin</span>
+        </div>
+    </div>
+
+    <script>
+        function switchPage(pageId, element) {
+            document.querySelectorAll('.app-page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function goToPayment(event) {
+            event.preventDefault();
+            document.querySelectorAll('.nav-item')[1].click(); // Auto switch to payment tab
+        }
+
+        function checkAdmin() {
+            const pass = document.getElementById('adminPass').value;
+            if(pass === "1234") { // Password ya kuingilia kwenye Admin
+                document.getElementById('admin-login').style.display = "none";
+                document.getElementById('admin-dashboard').style.display = "block";
+            } else {
+                alert("Password Sio Sahihi!");
+            }
+        }
+    </script>
+</body>
+</html>
