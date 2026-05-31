@@ -6,10 +6,11 @@
     <meta name="theme-color" content="#1e3c72">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>BoomCheck TZ Pro - Uhakiki HESLB</title>
+    <title>BoomCheck TZ Pro - Uhakiki HESLB & AI Advice</title>
     
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+    <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     
     <style>
         /* Mipangilio ya Msingi */
@@ -19,7 +20,7 @@
         /* Header */
         .app-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 25px 15px 20px; text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); position: relative; z-index: 10; }
         .app-brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
-        .app-logo { width: 45px; height: 45px; background-color: #ff9900; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 2px 8px rgba(255,153,0,0.4); }
+        .app-logo { width: 45px; height: 45px; background-image: url('icon.png'); background-size: cover; background-position: center; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(255,153,0,0.4); }
         .app-title { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
         .app-tagline { font-size: 13px; color: #e0e0e0; font-weight: 500; margin-bottom: 10px; }
         
@@ -53,7 +54,7 @@
         
         .result-circle { width: 120px; height: 120px; border-radius: 50%; border: 6px solid #00cc88; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; background: #e6f9f2; }
         .result-percent { font-size: 36px; font-weight: 800; color: #009966; }
-        .advice-box { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e1e5eb; font-size: 14px; line-height: 1.6; color: #333; text-align: left; }
+        .advice-box { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e1e5eb; font-size: 14px; line-height: 1.6; color: #333; text-align: left; position: relative; min-height: 80px; }
         
         /* Payment Tabs (API Gateway UI) */
         .pay-tabs { display: flex; margin-bottom: 15px; background: #f0f2f5; border-radius: 10px; padding: 4px; }
@@ -63,7 +64,7 @@
         .pay-content.active { display: block; animation: fadeIn 0.3s; }
         
         /* Loading Spinner */
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ff9900; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ff9900; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; margin: 10px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* Navigation ya Chini */
@@ -92,10 +93,10 @@
 
     <div class="app-header">
         <div class="app-brand">
-            <div class="app-logo">🎓</div>
+            <div class="app-logo"></div>
             <div class="app-title">BoomCheck TZ</div>
         </div>
-        <div class="app-tagline">Uchambuzi wa Vigezo Vya HESLB</div>
+        <div class="app-tagline">Uchambuzi wa Vigezo Vya HESLB & AI Advice</div>
         <button id="installBtn">📲 Weka App Kwenye Simu</button>
     </div>
 
@@ -109,7 +110,7 @@
                     <form id="checkForm" onsubmit="processForm(event)">
                         <div class="form-group">
                             <label>Majina Kamili (Kama Kwenye Vyeti)</label>
-                            <input type="text" id="inJina" class="form-control" placeholder="Mfano: Amani Maba" required>
+                            <input type="text" id="inJina" class="form-control" placeholder="Mfano: Juma Shabani" required>
                         </div>
                         <div class="form-group">
                             <label>Namba ya NIDA (Au Risiti)</label>
@@ -142,7 +143,6 @@
                                 <option value="Private">Private / Binafsi</option>
                             </select>
                         </div>
-                         </div>
                         <div class="form-group">
                             <label>Hali ya Wazazi / Kijamii</label>
                             <select id="inWazazi" class="form-control" required>
@@ -162,23 +162,23 @@
                 <div class="card">
                     <div class="card-title">Kamilisha Malipo 🔒</div>
                     <p style="font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.5;">
-                        Uchambuzi umekamilika. Lipia <b>Ada ya Uhakiki ya <span id="displayFee" style="color:#1e3c72; font-size: 16px;">Tsh 500</span></b> ili mfumo ukuruhusu kuona majibu yako.
+                        Uchambuzi umekamilika. Lipia <b>Ada ya Uhakiki ya <span id="displayFee" style="color:#1e3c72; font-size: 16px;">Tsh 500</span></b> ili mfumo ukuruhusu kuona majibu yako na Ushauri wa AI.
                     </p>
                     
                     <div class="pay-tabs">
-                        <div class="pay-tab active" onclick="switchPayTab('push')">Lipa Hapa (Push)</div>
-                        <div class="pay-tab" onclick="switchPayTab('manual')">Tuma Kwa Namba</div>
+                        <div class="pay-tab active" onclick="switchPayTab('push')">Lipa Moja kwa Moja</div>
+                        <div class="pay-tab" onclick="switchPayTab('manual')">Uhakiki wa Muamala</div>
                     </div>
 
                     <div id="pay-push" class="pay-content active">
                         <div style="background: #f4f6f9; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #dcdcdc; margin-bottom: 15px;">
-                            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Ingiza namba yako ya simu. Mfumo utatuma ujumbe kwenye simu yako uweke PIN kulipia moja kwa moja.</p>
+                            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Ingiza namba yako ya simu (M-Pesa, TigoPesa, AirtelMoney). Mfumo utatuma amri ya PIN papo hapo.</p>
                             <div class="form-group">
                                 <input type="number" id="phonePush" class="form-control" placeholder="Mfano: 07XX XXX XXX">
                             </div>
-                            <button type="button" class="btn btn-success" id="btnPush" onclick="triggerPushAPI()">Tuma Ombi la Kulipa (Push)</button>
+                            <button type="button" class="btn btn-success" id="btnPush" onclick="triggerAzamPayPushAPI()">Piga Simu AzamPay API (Push)</button>
                             <div id="pushLoader" class="loader"></div>
-                            <p id="pushStatus" style="font-size: 12px; color: #00cc88; margin-top: 10px; font-weight: bold; display: none;">Ombi limetumwa! Tafadhali weka namba ya siri kwenye simu yako.</p>
+                            <p id="pushStatus" style="font-size: 12px; color: #00cc88; margin-top: 10px; font-weight: bold; display: none;">Tafadhali angalia kioo cha simu yako na uweke PIN kumaliza malipo.</p>
                         </div>
                     </div>
 
@@ -186,30 +186,28 @@
                         <div style="background: #f4f6f9; padding: 15px; border-radius: 12px; text-align: center; border: 1px dashed #dcdcdc; margin-bottom: 15px;">
                             <p style="font-size: 13px; color: #666; font-weight: 600; margin-bottom: 5px;">Airtel Money - Lipa Namba</p>
                             <h2 style="color: #e74c3c; font-size: 28px; letter-spacing: 3px; margin-bottom: 10px;">136854317</h2>
-                            <div class="alert-box" style="padding: 8px;">
-                                Jina: <b>AIRTEL LIPA AMANI</b>
-                            </div>
+                            <div class="alert-box" style="padding: 8px;"> Jina: <b>AIRTEL LIPA AMANI</b> </div>
                             <button type="button" class="btn btn-secondary" style="padding: 10px;" onclick="copyNumber()">📋 Copy Namba</button>
                             
                             <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
                             
-                            <p style="font-size: 12px; color: #444; margin-bottom: 8px; font-weight: bold;">Ukishalipa, jaza Namba ya Muamala (Txn ID) hapa chini kuhakiki:</p>
+                            <p style="font-size: 12px; color: #444; margin-bottom: 8px; font-weight: bold;">Ukishalipa, ingiza Namba ya Muamala hapa chini:</p>
                             <div class="form-group">
                                 <input type="text" id="txnId" class="form-control" placeholder="Mfano: 7G9QK8A..." style="text-transform: uppercase;">
                             </div>
-                            <button type="button" class="btn btn-dark" id="btnVerify" onclick="verifyAPI()">Hakiki Malipo Kwenye Mtandao</button>
+                            <button type="button" class="btn btn-dark" id="btnVerify" onclick="verifyManualTransaction()">Hakiki Muamala Mtandaoni</button>
                             <div id="verifyLoader" class="loader"></div>
                         </div>
                     </div>
 
-                    <div class="error-msg" id="paymentError">❌ Tafadhali Kamilisha Malipo Kwanza! Mfumo haujapokea uthibitisho.</div>
+                    <div class="error-msg" id="paymentError">❌ UTAMBUZI: Mifumo yetu haijapokea thibitisho la muamala kutoka Mtandao. Kamilisha malipo kwanza!</div>
                     <button class="btn btn-primary" onclick="attemptShowResults()" style="margin-top: 10px;">🔓 Nimeshalipa, Fungua Majibu</button>
                 </div>
             </div>
 
             <div id="step-results" style="display: none;">
                 <div class="card" style="text-align: center;">
-                    <div class="card-title" style="justify-content: center;">Matokeo ya Uchambuzi</div>
+                    <div class="card-title" style="justify-content: center;">Matokeo ya Uchambuzi Maalum</div>
                     
                     <h3 style="color: #1e3c72; margin-bottom: 20px; font-size: 18px;">Hongera, <span id="resJina"></span></h3>
                     
@@ -219,8 +217,9 @@
                     <p style="font-weight: 700; color: #555; margin-bottom: 20px;">Uwezekano wa Kupata Mkopo</p>
                     
                     <div class="advice-box">
-                        <strong style="color: #1e3c72; display: block; margin-bottom: 8px;">📌 Ushauri wa Kitaalamu:</strong>
-                        <span id="resUshauri"></span>
+                        <strong style="color: #1e3c72; display: block; margin-bottom: 8px;">🤖 Ushauri wa Kitaalamu (Powered by AI):</strong>
+                        <div id="geminiLoader" class="loader" style="display:block;"></div>
+                        <span id="resUshauri" style="color: #555; font-size: 13.5px;">Inatafuta ushauri maalum kutoka kwa AI...</span>
                     </div>
                     
                     <button class="btn btn-primary" onclick="resetForm()" style="margin-top: 25px;">🔄 Fanya Uhakiki Mwingine</button>
@@ -305,7 +304,8 @@
         // --- 1. Mfumo wa Settings & Hali ya Malipo ---
         let appSettings = JSON.parse(localStorage.getItem('boomSettings')) || { fee: 500 };
         let currentUserData = null; 
-        let paymentVerified = false; // LINZI KUU: Haturuhusu kuona majibu mpaka hii iwe TRUE
+        let paymentVerified = false; // LINZI KUU - Haturuhusu mtu kuona majibu mpaka ilipewe true
+        let calculatedPercentage = 0; 
 
         document.getElementById('displayFee').innerText = "Tsh " + appSettings.fee.toLocaleString();
 
@@ -333,14 +333,17 @@
                 status: "Pending Payment"
             };
 
-            paymentVerified = false; // Reset payment status
+            paymentVerified = false; 
             document.getElementById('paymentError').style.display = 'none';
             document.getElementById('step-form').style.display = 'none';
             document.getElementById('step-payment').style.display = 'block';
             document.getElementById('resJina').innerText = currentUserData.jina;
+            
+            // Piga hesabu ya asilimia mapema kimya kimya
+            calculateInternalScore();
         }
 
-        // --- 4. API GATEWAY SIMULATION ---
+        // --- 4. LANGO LA KIKWELI LA MALIPO (AZAMPAY INTERACTION) ---
         
         function switchPayTab(tab) {
             document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
@@ -355,39 +358,97 @@
             }
         }
 
-        function triggerPushAPI() {
+        // MAWASILIANO YA API YA AZAMPAY (Kupitia Vercel Bridge kwa Usalama)
+        function triggerAzamPayPushAPI() {
             let phone = document.getElementById('phonePush').value;
             if(phone.length < 10) {
-                alert("Tafadhali weka namba ya simu iliyo sahihi."); return;
+                alert("Weka namba ya simu iliyokamilika (Tsh 500 itakatwa)."); return;
             }
             
-            // Ficha button, onyesha loader simulating API call
             document.getElementById('btnPush').style.display = 'none';
             document.getElementById('pushLoader').style.display = 'block';
             
-            setTimeout(() => {
+            // Wito wa kisayansi kwenda Vercel Serverless Back-end yetu ya AzamPay
+            fetch('/api/azampay-trigger', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: phone,
+                    amount: appSettings.fee,
+                    name: currentUserData.jina
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('pushLoader').style.display = 'none';
+                    document.getElementById('pushStatus').style.display = 'block';
+                    
+                    // Anza kuangalia mtandaoni kama muamala umekamilika. 
+                    // KUMBUKA: Hii inahitaji faili la `/api/azampay-check.js` upande wa Vercel!
+                    checkAzamPayStatusLoop(data.transactionId);
+                } else {
+                    alert("AzamPay Gateway Response: " + data.message);
+                    document.getElementById('pushLoader').style.display = 'none';
+                    document.getElementById('btnPush').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                // LOOPHOLE CLOSED: Mfumo haujifungui tena wenyewe ukikwama!
+                alert("Imeshindwa kuwasiliana na mfumo wa malipo. Tafadhali jaribu tena.");
                 document.getElementById('pushLoader').style.display = 'none';
-                document.getElementById('pushStatus').style.display = 'block';
-                // Ruhusu mfumo kupokea majibu baada ya sekunde kadhaa kana kwamba mteja kaweka PIN
-                setTimeout(() => { authorizePayment(); }, 3000);
-            }, 1500);
+                document.getElementById('btnPush').style.display = 'block';
+            });
         }
 
-        function verifyAPI() {
+        function checkAzamPayStatusLoop(txnId) {
+            let checkCount = 0;
+            let interval = setInterval(() => {
+                checkCount++;
+                fetch(`/api/azampay-check?id=${txnId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "COMPLETED") {
+                        clearInterval(interval);
+                        authorizePayment();
+                        attemptShowResults();
+                    }
+                })
+                .catch(err => console.log("Waiting for payment...")); // Ulinzi: Usifanye chochote kikishindwa
+                if(checkCount > 12) clearInterval(interval); // Inakata tamaa baada ya dakika 1 kama hajalipa
+            }, 5000);
+        }
+
+        function verifyManualTransaction() {
             let txn = document.getElementById('txnId').value;
             if(txn.length < 5) {
-                alert("Namba ya Muamala haijakamilika!"); return;
+                alert("Ingiza Namba ya Muamala iliyokamilika."); return;
             }
 
             document.getElementById('btnVerify').style.display = 'none';
             document.getElementById('verifyLoader').style.display = 'block';
             
-            setTimeout(() => {
+            // Inatuma kwenda kwenye API yetu
+            fetch('/api/verify-manual', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ txnId: txn, nida: currentUserData.nida })
+            })
+            .then(res => res.json())
+            .then(data => {
                 document.getElementById('verifyLoader').style.display = 'none';
                 document.getElementById('btnVerify').style.display = 'block';
-                authorizePayment();
-                alert("Muamala umethibitishwa Kikamilifu na Mfumo!");
-            }, 2000);
+                if(data.valid) {
+                    authorizePayment();
+                    attemptShowResults();
+                } else { alert("Namba ya muamala haijapatikana au imeshawahi kutumika!"); }
+            })
+            .catch(err => {
+                // LOOPHOLE CLOSED
+                alert("Hitilafu imetokea wakati wa kuhakiki muamala.");
+                document.getElementById('verifyLoader').style.display = 'none';
+                document.getElementById('btnVerify').style.display = 'block';
+            });
         }
 
         function authorizePayment() {
@@ -397,44 +458,32 @@
         }
 
         function copyNumber() {
-            navigator.clipboard.writeText("136854317").then(() => alert("Kopi Namba 136854317. Nenda kwenye menyu ya TigoPesa/M-Pesa/AirtelMoney ulipe."));
+            navigator.clipboard.writeText("136854317").then(() => alert("Namba 136854317 imekopiwa!"));
         }
 
-        // --- 5. Lango la Kuzuia (Security Check) ---
+        // --- 5. Lango Kuu la Ulinzi (Security Gate) ---
         function attemptShowResults() {
             if(!paymentVerified) {
-                // Kama hajalipa, mpige STOP!
                 let errBox = document.getElementById('paymentError');
                 errBox.style.display = 'block';
-                
-                // Tikisa box kumuonya
-                errBox.style.animation = 'none';
-                setTimeout(() => errBox.style.animation = 'pulse 0.5s ease', 10);
                 return;
             }
 
-            // Hifadhi Mteja kwenye Database (Local Storage) kwasababu amelipa halali
+            // Hifadhi kwenye hifadhi ya ndani kwa ajili ya admin panel
             let allUsers = JSON.parse(localStorage.getItem('boomUsers')) || [];
             allUsers.push(currentUserData);
             localStorage.setItem('boomUsers', JSON.stringify(allUsers));
 
-            // Onyesha Majibu
-            showResults();
+            showResultsPage();
         }
 
-        // --- 6. Kuonyesha Majibu (Calculation Logic) ---
-        function showResults() {
-            document.getElementById('step-payment').style.display = 'none';
-            document.getElementById('step-results').style.display = 'block';
-
+        // --- 6. Hesabu na Mawasiliano na Gemini AI ---
+        function calculateInternalScore() {
             let asilimia = 40; 
-            let ushauri = "";
-
             if (currentUserData.wazazi === "Yatima (Wote)" || currentUserData.wazazi === "Ulemavu") asilimia += 35;
             else if (currentUserData.wazazi === "Yatima (Mmoja)" || currentUserData.wazazi === "Mzazi Mmoja") asilimia += 20;
 
             if (currentUserData.shuleAina === "Serikali") asilimia += 15;
-
             if (currentUserData.kozi === "Cluster 1") asilimia += 15;
             else if (currentUserData.kozi === "Cluster 2") asilimia += 10;
 
@@ -442,42 +491,60 @@
 
             if (asilimia > 99) asilimia = 99;
             if (asilimia < 15) asilimia = 15;
+            
+            calculatedPercentage = asilimia;
+        }
+
+        function showResultsPage() {
+            document.getElementById('step-payment').style.display = 'none';
+            document.getElementById('step-results').style.display = 'block';
 
             let percentElement = document.getElementById('resPercent');
-            percentElement.innerText = asilimia + "%";
+            percentElement.innerText = calculatedPercentage + "%";
             
-            if(asilimia >= 75) {
-                percentElement.style.color = "#009966"; 
-                ushauri = "Upo kwenye Kundi la Kipaumbele (Priority). Nafasi yako ni kubwa sana. Hakikisha fomu zimetiwa saini na RITA/NIDA na Serikali za Mitaa.";
-            } else if (asilimia >= 50) {
-                percentElement.style.color = "#ff9900"; 
-                ushauri = "Nafasi yako ipo wastani. Hakikisha unaambatanisha barua ya maelezo kuelezea uhitaji wako na saini ni sahihi kwenye fomu.";
-            } else {
-                percentElement.style.color = "#e74c3c"; 
-                ushauri = "Vigezo vyako havipo kwenye kipaumbele cha juu. Unashauriwa kuambatanisha barua ya serikali ya mtaa kutetea maombi yako.";
-            }
+            if(calculatedPercentage >= 75) percentElement.style.color = "#009966"; 
+            else if (calculatedPercentage >= 50) percentElement.style.color = "#ff9900"; 
+            else percentElement.style.color = "#e74c3c";
 
-            if (currentUserData.rita === "Hapana") ushauri += "<br><br><b style='color:#e74c3c;'>Angalizo:</b> Ukosefu wa Cheti cha Kuzaliwa cha RITA unashusha sana alama zako.";
-
-            document.getElementById('resUshauri').innerHTML = ushauri;
+            // WITO WA KISAYANSI KWENYE GEMINI API
+            fetch('/api/gemini-advice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userData: currentUserData, score: calculatedPercentage })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('geminiLoader').style.display = 'none';
+                if(data.advice) {
+                    document.getElementById('resUshauri').innerHTML = data.advice;
+                } else {
+                    document.getElementById('resUshauri').innerText = "Marekebisho: Mfumo unashindwa kusoma API key. Angalia logi za Vercel Backend.";
+                }
+            })
+            .catch(err => {
+                // Fallback ya ki-Algorithm kama AI inasumbua mtandaoni
+                document.getElementById('geminiLoader').style.display = 'none';
+                document.getElementById('resUshauri').innerHTML = `<b>Ushauri wa Ndani:</b> Nafasi yako ipo katika ${calculatedPercentage}%. Hakikisha unaambatanisha nyaraka zote kwa usahihi wa hali ya juu ili kuepuka kukatwa na kamati ya HESLB.`;
+            });
         }
 
         function resetForm() {
             document.getElementById('checkForm').reset();
             document.getElementById('step-results').style.display = 'none';
             document.getElementById('step-form').style.display = 'block';
-            // Reset API status
             document.getElementById('btnPush').style.display = 'block';
             document.getElementById('pushStatus').style.display = 'none';
             document.getElementById('phonePush').value = "";
             document.getElementById('txnId').value = "";
+            document.getElementById('geminiLoader').style.display = 'block';
+            document.getElementById('resUshauri').innerText = "Inatafuta ushauri maalum kutoka kwa AI...";
             currentUserData = null;
         }
 
         // --- 7. ADMIN PANEL LOGIC ---
         function loginAdmin() {
             let pass = document.getElementById('adminPass').value;
-            if(pass === "1234") {
+            if(pass === "1234") { // Password ya muda (unaweza kubadili)
                 document.getElementById('admin-login').style.display = "none";
                 document.getElementById('admin-dashboard').style.display = "block";
                 document.getElementById('adminPass').value = ""; 
@@ -492,8 +559,7 @@
 
         function loadAdminData() {
             let allUsers = JSON.parse(localStorage.getItem('boomUsers')) || [];
-            
-            let totalWatu = allUsers.length; // Watumiaji ambao wamelipia tu ndio wanaingia hapa
+            let totalWatu = allUsers.length; 
             let totalPesa = totalWatu * Number(appSettings.fee);
             
             document.getElementById('dashUsers').innerText = totalWatu;
@@ -534,7 +600,7 @@
         }
 
         function clearAllData() {
-            if(confirm("ONYO: Unataka kufuta rekodi zote na kusifurisha mapato?")) {
+            if(confirm("ONYO: Unataka kusafisha data zote za mapato?")) {
                 localStorage.removeItem('boomUsers');
                 alert("Data zote zimefutwa.");
                 loadAdminData(); 
@@ -545,8 +611,8 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('PWA Inafanya Kazi!'))
-                    .catch(err => console.log('Hitilafu PWA:', err));
+                    .then(reg => console.log('PWA Connected'))
+                    .catch(err => console.log('PWA Error', err));
             });
         }
 
@@ -562,9 +628,7 @@
         installBtn.addEventListener('click', (e) => {
             installBtn.style.display = 'none';
             deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                deferredPrompt = null;
-            });
+            deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
         });
     </script>
 </body>
