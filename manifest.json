@@ -1,8 +1,8 @@
 {
   "name": "BoomCheck TZ Pro",
   "short_name": "BoomCheck",
-  "description": "Uhakiki wa Mikopo ya HESLB",
-  "start_url": "./index.html",
+  "description": "Uhakiki wa Vigezo Vya HESLB na AI Advice",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f0f2f5",
   "theme_color": "#1e3c72",
