@@ -2,197 +2,630 @@
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EftGamers League 🎮</title>
-    <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#1e40af">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1e3c72">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>BoomCheck TZ Pro - Uhakiki HESLB & AI Advice</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    
     <style>
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .status-pending { background-color: #f59e0b; color: #111827; }
-        .status-verified { background-color: #10b981; color: white; }
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; color: white; text-align: left; }
-        .admin-table th, .admin-table td { padding: 10px; border-bottom: 1px solid #374151; font-size: 14px; }
-        .admin-table th { background-color: #1f2937; color: #3b82f6; }
-        .mini-btn { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 12px; }
-        .score-display { background-color: #10b981; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        /* Mipangilio ya Msingi */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #333; padding-bottom: 80px; -webkit-tap-highlight-color: transparent; }
+        
+        /* Header */
+        .app-header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 25px 15px 20px; text-align: center; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); position: relative; z-index: 10; }
+        .app-brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 8px; }
+        .app-logo { width: 45px; height: 45px; background-image: url('icon.png'); background-size: cover; background-position: center; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(255,153,0,0.4); }
+        .app-title { font-size: 24px; font-weight: 800; letter-spacing: 0.5px; }
+        .app-tagline { font-size: 13px; color: #e0e0e0; font-weight: 500; margin-bottom: 10px; }
+        
+        /* PWA Install Button */
+        #installBtn { display: none; background: #00cc88; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; margin: 0 auto; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); font-size: 13px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* Makasha (Cards) */
+        .container { padding: 15px; max-width: 500px; margin: -10px auto 0; position: relative; z-index: 20; }
+        .card { background-color: white; border-radius: 16px; padding: 22px; margin-bottom: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        .card-title { font-size: 17px; font-weight: 700; color: #1e3c72; margin-bottom: 20px; border-left: 4px solid #ff9900; padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Fomu */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #444; }
+        .form-control { width: 100%; padding: 14px; border: 1.5px solid #e1e5eb; border-radius: 10px; font-size: 14px; background-color: #f8f9fa; transition: all 0.3s ease; }
+        .form-control:focus { outline: none; border-color: #1e3c72; background-color: #fff; box-shadow: 0 0 0 3px rgba(30,60,114,0.1); }
+        
+        /* Vifungo (Buttons) */
+        .btn { width: 100%; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; border: none; transition: transform 0.1s, box-shadow 0.2s; margin-bottom: 12px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, #ff9900 0%, #e68a00 100%); color: white; box-shadow: 0 4px 10px rgba(255,153,0,0.3); }
+        .btn-secondary { background: #f0f2f5; color: #333; border: 1px solid #dcdcdc; }
+        .btn-dark { background: #1e3c72; color: white; box-shadow: 0 4px 10px rgba(30,60,114,0.3); }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-success { background: #00cc88; color: white; }
+        
+        /* Sehemu za Taarifa (Alerts & Results) */
+        .alert-box { background-color: #fff3e0; border-left: 4px solid #ff9900; padding: 12px; font-size: 13px; margin-bottom: 15px; border-radius: 8px; color: #d35400; font-weight: 500; }
+        .error-msg { color: #e74c3c; font-size: 13px; font-weight: bold; text-align: center; margin-top: 10px; display: none; padding: 10px; background: #fdf5f5; border-radius: 8px; border: 1px solid #fadbd8; }
+        
+        .result-circle { width: 120px; height: 120px; border-radius: 50%; border: 6px solid #00cc88; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; background: #e6f9f2; }
+        .result-percent { font-size: 36px; font-weight: 800; color: #009966; }
+        .advice-box { background: #f8f9fa; padding: 15px; border-radius: 10px; border: 1px solid #e1e5eb; font-size: 14px; line-height: 1.6; color: #333; text-align: left; position: relative; min-height: 80px; }
+        
+        /* Payment Tabs (API Gateway UI) */
+        .pay-tabs { display: flex; margin-bottom: 15px; background: #f0f2f5; border-radius: 10px; padding: 4px; }
+        .pay-tab { flex: 1; text-align: center; padding: 10px; font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; color: #666; transition: all 0.3s; }
+        .pay-tab.active { background: white; color: #1e3c72; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .pay-content { display: none; }
+        .pay-content.active { display: block; animation: fadeIn 0.3s; }
+        
+        /* Loading Spinner */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ff9900; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; display: none; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Navigation ya Chini */
+        .app-page { display: none; animation: fadeIn 0.3s; }
+        .app-page.active { display: block; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 65px; background-color: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e1e5eb; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #95a5a6; font-size: 11px; font-weight: 600; width: 50%; height: 100%; cursor: pointer; transition: color 0.2s; }
+        .nav-item.active { color: #1e3c72; }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+
+        /* Admin Panel Styles */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-box { background: #f8f9fa; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #e1e5eb; }
+        .stat-num { font-size: 22px; font-weight: 800; color: #1e3c72; margin-bottom: 4px; }
+        .stat-label { font-size: 11px; color: #7f8c8d; font-weight: 600; text-transform: uppercase; }
+        .table-wrapper { overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #e1e5eb; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; background: white; }
+        th, td { border-bottom: 1px solid #e1e5eb; padding: 12px; text-align: left; }
+        th { background: #f8f9fa; color: #1e3c72; font-weight: 700; }
+        td { color: #444; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="app-header">
+        <div class="app-brand">
+            <div class="app-logo"></div>
+            <div class="app-title">BoomCheck TZ</div>
+        </div>
+    <div class="container">
         
-        <aside class="sidebar">
-            <h2 style="text-align: center; margin-bottom: 10px;">🏆 EFT GAMERS</h2>
+        <div id="page-user" class="app-page active">
             
-            <div id="install-container" style="display: none; text-align: center; margin-bottom: 20px; background: #1e3a8a; padding: 10px; border-radius: 8px;">
-                <img src="icon.png" alt="App Icon" style="width: 50px; height: 50px; border-radius: 10px; margin-bottom: 5px;">
-                <button id="install-btn" class="submit-btn" style="background-color: #f59e0b; margin-top: 0; padding: 8px; font-size: 12px;">📲 Pakua App</button>
+            <div id="step-form" class="active">
+                <div class="card">
+                    <div class="card-title">Jaza Taarifa kwa Usahihi</div>
+                    <form id="checkForm" onsubmit="processForm(event)">
+                        <div class="form-group">
+                            <label>Majina Kamili (Kama Kwenye Vyeti)</label>
+                            <input type="text" id="inJina" class="form-control" placeholder="Mfano: Juma Shabani" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Namba ya NIDA (Au Risiti)</label>
+                            <input type="number" id="inNida" class="form-control" placeholder="Ingiza tarakimu za NIDA" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Je, Una Cheti cha Kuzaliwa (RITA)?</label>
+                            <select id="inRita" class="form-control" required>
+                                <option value="Ndio">Ndio, Ninacho</option>
+                                <option value="Hapana">Hapana / Bado Nakitafuta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Kundi la Kozi (Cluster)</label>
+                            <select id="inKozi" class="form-control" required>
+                                <option value="" disabled selected>-- Chagua Kundi --</option>
+                                <option value="Cluster 1">Sayansi, Uhandisi, Afya, Hisabati</option>
+                                <option value="Cluster 2">Elimu (Sayansi), Kilimo</option>
+                                <option value="Cluster 3">Biashara, Sheria, Sanaa, nk</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Jina la Shule (O-Level & A-Level)</label>
+                            <input type="text" id="inShuleJina" class="form-control" placeholder="Mfano: Mzumbe Sec" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Aina ya Shule Uliyosoma</label>
+                            <select id="inShuleAina" class="form-control" required>
+                                <option value="Serikali">Serikali / Shule za Kata</option>
+                                <option value="Private">Private / Binafsi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Hali ya Wazazi / Kijamii</label>
+                            <select id="inWazazi" class="form-control" required>
+                                <option value="Wote Wapo Hai">Wazazi Wote Wapo Hai</option>
+                                <option value="Mzazi Mmoja">Mzazi Mmoja (Single Parent)</option>
+                                <option value="Yatima (Mmoja)">Yatima (Mzazi Mmoja Amefariki)</option>
+                                <option value="Yatima (Wote)">Yatima (Wazazi Wote Wamefariki)</option>
+                                <option value="Ulemavu">Nina Ulemavu / Mzazi Ana Ulemavu</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Fanya Uchambuzi</button>
+                    </form>
+                </div>
             </div>
 
-            <nav>
-                <button onclick="showPage('home')" class="nav-btn active">🏠 Home & Sheria</button>
-                <button onclick="showPage('register')" class="nav-btn">📝 Jisajili Hapa</button>
-                <button onclick="showPage('contacts')" class="nav-btn">📅 Wachezaji Waliojisajili</button>
-                <button onclick="showPage('submit-results')" class="nav-btn">⚽ Tuma Matokeo</button>
-                <button onclick="showPage('live-scores')" class="nav-btn">📊 Matokeo ya Mechi</button>
-                <button onclick="showPage('standings')" class="nav-btn">📈 Msimamo wa Ligi</button>
-                <button onclick="showPage('fixtures')" class="nav-btn">🗓️ Ratiba Kamili</button>
-                <button onclick="showPage('admin')" class="nav-btn">⚙️ Admin Hub</button>
-            </nav>
-        </aside>
+            <div id="step-payment" style="display: none;">
+                <div class="card">
+                    <div class="card-title">Kamilisha Malipo 🔒</div>
+                    <p style="font-size: 14px; color: #555; margin-bottom: 15px; line-height: 1.5;">
+                        Uchambuzi umekamilika. Lipia <b>Ada ya Uhakiki ya <span id="displayFee" style="color:#1e3c72; font-size: 16px;">Tsh 500</span></b> ili mfumo ukuruhusu kuona majibu yako na Ushauri wa AI.
+                    </p>
+                    
+                    <div class="pay-tabs">
+                        <div class="pay-tab active" onclick="switchPayTab('push')">Lipa Moja kwa Moja</div>
+                        <div class="pay-tab" onclick="switchPayTab('manual')">Uhakiki wa Muamala</div>
+                    </div>
 
-        <main class="main-content">
+                    <div id="pay-push" class="pay-content active">
+                        <div style="background: #f4f6f9; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #dcdcdc; margin-bottom: 15px;">
+                            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Ingiza namba yako ya simu (M-Pesa, TigoPesa, AirtelMoney). Mfumo utatuma amri ya PIN papo hapo.</p>
+                            <div class="form-group">
+                                <input type="number" id="phonePush" class="form-control" placeholder="Mfano: 07XX XXX XXX">
+                            </div>
+                            <button type="button" class="btn btn-success" id="btnPush" onclick="triggerAzamPayPushAPI()">Piga Simu AzamPay API (Push)</button>
+                            <div id="pushLoader" class="loader"></div>
+                            <p id="pushStatus" style="font-size: 12px; color: #00cc88; margin-top: 10px; font-weight: bold; display: none;">Tafadhali angalia kioo cha simu yako na uweke PIN kumaliza malipo.</p>
+                        </div>
+                    </div>
+
+                    <div id="pay-manual" class="pay-content">
+                        <div style="background: #f4f6f9; padding: 15px; border-radius: 12px; text-align: center; border: 1px dashed #dcdcdc; margin-bottom: 15px;">
+                            <p style="font-size: 13px; color: #666; font-weight: 600; margin-bottom: 5px;">Airtel Money - Lipa Namba</p>
+                            <h2 style="color: #e74c3c; font-size: 28px; letter-spacing: 3px; margin-bottom: 10px;">136854317</h2>
+                            <div class="alert-box" style="padding: 8px;"> Jina: <b>AIRTEL LIPA AMANI</b> </div>
+                            <button type="button" class="btn btn-secondary" style="padding: 10px;" onclick="copyNumber()">📋 Copy Namba</button>
+                            
+                            <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+                            
+                            <p style="font-size: 12px; color: #444; margin-bottom: 8px; font-weight: bold;">Ukishalipa, ingiza Namba ya Muamala hapa chini:</p>
+                            <div class="form-group">
+                                <input type="text" id="txnId" class="form-control" placeholder="Mfano: 7G9QK8A..." style="text-transform: uppercase;">
+                            </div>
+                            <button type="button" class="btn btn-dark" id="btnVerify" onclick="verifyManualTransaction()">Hakiki Muamala Mtandaoni</button>
+                            <div id="verifyLoader" class="loader"></div>
+                        </div>
+                    </div>
+
+                    <div class="error-msg" id="paymentError">❌ UTAMBUZI: Mifumo yetu haijapokea thibitisho la muamala kutoka Mtandao. Kamilisha malipo kwanza!</div>
+                    <button class="btn btn-primary" onclick="attemptShowResults()" style="margin-top: 10px;">🔓 Nimeshalipa, Fungua Majibu</button>
+                </div>
+            </div>
+
+            <div id="step-results" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <div class="card-title" style="justify-content: center;">Matokeo ya Uchambuzi Maalum</div>
+                    
+                    <h3 style="color: #1e3c72; margin-bottom: 20px; font-size: 18px;">Hongera, <span id="resJina"></span></h3>
+                    
+                    <div class="result-circle">
+                        <span class="result-percent" id="resPercent">0%</span>
+                    </div>
+                    <p style="font-weight: 700; color: #555; margin-bottom: 20px;">Uwezekano wa Kupata Mkopo</p>
+                    
+                    <div class="advice-box">
+                        <strong style="color: #1e3c72; display: block; margin-bottom: 8px;">🤖 Ushauri wa Kitaalamu (Powered by AI):</strong>
+                        <div id="geminiLoader" class="loader" style="display:block;"></div>
+                        <span id="resUshauri" style="color: #555; font-size: 13.5px;">Inatafuta ushauri maalum kutoka kwa AI...</span>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="resetForm()" style="margin-top: 25px;">🔄 Fanya Uhakiki Mwingine</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="page-admin" class="app-page">
             
-            <section id="home" class="page-section active-page">
-                <h2>Karibu EftGamers-League Hub</h2>
-                <p>Mfumo thabiti wa kiotomatiki unaoendesha mashindano ya eFootball kuanzia usajili hadi kutwaa taji.</p>
-                <div class="rules-grid">
-                    <div class="card warning">
-                        <h3>⚙  Sheria za Michezo (Gameplay)</h3>
-                        <ul>
-                            <li><strong>Control:</strong> Full Human Controlled (No AI).</li>
-                            <li><strong>Smart Assist:</strong> Imezuiwa kabisa.</li>
-                            <li><strong>Muda wa Mechi:</strong> Dakika 10.</li>
-                        </ul>
-                    </div>
-                    <div class="card info">
-                        <h3>🏆 Mfumo wa Mashindano</h3>
-                        <ul>
-                            <li>Kila Ligi inachukua kiwango cha juu cha wachezaji 16. Mfumo unafungua Ligi mpya ikijaa.</li>
-                            <li>Ratiba na Msimamo zinatengenezwa na kupigwa hesabu kiotomatiki na mfumo!</li>
-                        </ul>
-                    </div>
+            <div class="card" id="admin-login">
+                <div class="card-title">Ingia Kwenye Mtambo</div>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Eneo hili ni maalumu kwa ajili ya usimamizi tu.</p>
+                <div class="form-group">
+                    <input type="password" id="adminPass" class="form-control" placeholder="Ingiza Password ya Siri">
                 </div>
-            </section>
+                <button class="btn btn-dark" onclick="loginAdmin()">Ingia Ndani 🔐</button>
+            </div>
 
-            <section id="register" class="page-section">
-                <h2>📝 Fomu ya Usajili Rasmi</h2>
-                <form id="reg-form" onsubmit="handleRegistration(event)">
-                    <label>Jina lako la Kwenye Game (In-Game Name):</label>
-                    <input type="text" id="reg-name" required placeholder="Mfano: GhostPlayer">
-
-                    <label>Namba yako ya Simu:</label>
-                    <input type="tel" id="reg-phone" required placeholder="Mfano: 0792460625">
-
-                    <label>Njia ya Malipo:</label>
-                    <select id="pay-method" onchange="togglePaymentFields()">
-                        <option value="azampay">Lipa Moja kwa Moja (Push Utility)</option>
-                        <option value="manual">Nimeshalipa / Nitaweka Transaction ID</option>
-                    </select>
-
-                    <div id="transaction-field" style="display:none; margin-top: 15px;">
-                        <label>Namba ya Muamala (Transaction ID):</label>
-                        <input type="text" id="reg-payid" placeholder="Mfano: 9G4H2K9L">
-                    </div>
-
-                    <button type="submit" class="submit-btn">Kamilisha Usajili</button>
-                </form>
-                <div id="reg-message" style="margin-top: 20px; font-weight: bold; text-align: center;"></div>
-
-                <div class="easter-egg-zone">
-                    <p onclick="triggerSecretEngine()" style="font-size: 10px; color: #4b5563; cursor: pointer; margin-top: 60px; text-align: center;">Engine Version: Eft-V13.0.26</p>
-                    <div id="secret-input-container" style="display: none; text-align: center; margin-top: 10px;">
-                        <input type="password" id="secret-bypass-key" placeholder="System Override Key..." style="font-size: 12px; padding: 5px; width: 200px; text-align: center; background-color: #111827; border: 1px solid #374151; color: #10b981;">
-                    </div>
-                </div>
-            </section>
-
-            <section id="contacts" class="page-section">
-                <h2>📅 Orodha ya Wachezaji Waliojisajili (Live)</h2>
-                <div class="card info" style="overflow-x: auto;">
-                    <div id="contacts-list"></div>
-                </div>
-            </section>
-
-            <section id="submit-results" class="page-section">
-                <h2>⚽ Tuma Matokeo ya Mechi Yako</h2>
-                <p style="font-size: 14px; color: #9ca3af; margin-bottom: 15px;">Chagua mechi yako iliyopangwa kwenye ratiba, ingiza magoli kisha bonyeza tuma.</p>
-                <form id="results-form" onsubmit="handleResultSubmission(event)">
-                    <label>Chagua Fixture ya Mechi:</label>
-                    <select id="match-select" required>
-                        <option value="">-- Hakuna mechi amilifu kwa sasa --</option>
-                    </select>
-
-                    <div style="display: flex; gap: 20px; margin-top: 15px;">
-                        <div style="flex: 1;">
-                            <label id="home-label">Magoli ya Home:</label>
-                            <input type="number" id="home-score" min="0" required placeholder="0">
-                        </div>
-                        <div style="flex: 1;">
-                            <label id="away-label">Magoli ya Away:</label>
-                            <input type="number" id="away-score" min="0" required placeholder="0">
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn" style="background-color: #3b82f6;">Tuma Matokeo Sasa</button>
-                </form>
-                <div id="submit-msg" style="margin-top: 15px; font-weight: bold; text-align: center;"></div>
-            </section>
-
-            <section id="live-scores" class="page-section">
-                <h2>📊 Matokeo ya Mechi Zilizochezwa (Live Scores)</h2>
-                <div id="live-scores-container">
-                    <p style="color: #9ca3af;">Bado hakuna mechi zilizochezwa.</p>
-                </div>
-            </section>
-
-            <section id="standings" class="page-section">
-                <h2>📈 Jedwali la Msimamo wa Makundi / Ligi</h2>
-                <p style="font-size: 14px; color: #9ca3af; margin-bottom: 15px;">Msimamo huu unajisajili na kujipanga upya kila matokeo mapya yakitumwa.</p>
-                <div id="standings-container">
-                    <p style="color: #9ca3af;">Msimamo utatengenezwa mechi zikianza kuchezwa.</p>
-                </div>
-            </section>
-
-            <section id="fixtures" class="page-section">
-                <h2>🗓️ Ratiba Kamili ya Mashindano Rasmi</h2>
-                <div id="fixtures-list">
-                    <p style="color: #9ca3af;">Bado hakuna ratiba iliyotengenezwa kwa msimu huu.</p>
-                </div>
-            </section>
-
-            <section id="admin" class="page-section">
-                <h2>⚙️ Tinka Tech Admin Hub</h2>
+            <div id="admin-dashboard" style="display: none;">
                 
-                <div id="admin-login-area" class="card warning" style="border-left-color: #ef4444;">
-                    <h3>Eneo Linalodhibitiwa</h3>
-                    <label>Ingiza Nenosiri la Admin:</label>
-                    <input type="password" id="admin-login-pass" placeholder="***">
-                    <button onclick="loginAdmin()" class="submit-btn" style="background-color: #ef4444;">Ingia Kwenye Jopo</button>
-
-                    <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #4b5563;">
-                        <p onclick="togglePasswordReset()" style="font-size: 12px; color: #9ca3af; cursor: pointer; user-select: none;">🔐 Kubadili Nenosiri (Super Admin)?</p>
-                        <div id="password-reset-area" style="display: none; margin-top: 10px;">
-                            <input type="password" id="secret-senior-word" placeholder="Ingiza 'senior'...">
-                            <input type="password" id="new-admin-pass" placeholder="Nenosiri jipya...">
-                            <button onclick="changeAdminPassword()" class="submit-btn" style="background-color: #10b981;">Hifadhi</button>
-                            <p id="admin-reset-msg" style="margin-top: 10px; font-size: 13px;"></p>
+                <div class="card">
+                    <div class="card-title">Ripoti ya Mfumo</div>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-num" id="dashUsers">0</div>
+                            <div class="stat-label">Watumiaji Valid</div>
+                        </div>
+                        <div class="stat-box" style="background: #eef9f5; border-color: #aae0c8;">
+                            <div class="stat-num" id="dashRevenue" style="color: #009966;">Tsh 0</div>
+                            <div class="stat-label">Mapato Total</div>
                         </div>
                     </div>
                 </div>
 
-                <div id="admin-dashboard-area" style="display: none; margin-top: 20px;">
-                    <div class="card success" style="border-left-color: #10b981; background-color: #1f2937; padding: 20px; border-radius: 8px;">
-                        <h3 style="color: #10b981; margin-top: 0;">🛠️ Jopo Kuu la Udhibiti wa Ligi</h3>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                            <button onclick="adminVerifyPayments()" class="submit-btn" style="background-color: #3b82f6; margin: 0; padding: 12px;">📋 Hakiki Maombi ya Usajili</button>
-                            <button onclick="adminOpenFixtureControl()" class="submit-btn" style="background-color: #10b981; margin: 0; padding: 12px;">🎲 Panga & Kuanzisha Ratiba</button>
-                            <button onclick="adminClearAllData()" class="submit-btn" style="background-color: #ef4444; margin: 0; padding: 12px;">🗑️ Safisha Data Zote (Reset)</button>
-                        </div>
-
-                        <div id="admin-dynamic-content" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #4b5563;">
-                            <p style="color: #9ca3af; font-style: italic; text-align: center;">Chagua amri hapo juu kusimamia mfumo...</p>
-                        </div>
+                <div class="card">
+                    <div class="card-title">Settings za Mfumo ⚙️</div>
+                    <div class="form-group">
+                        <label>Badili Ada ya Uhakiki (Tsh)</label>
+                        <input type="number" id="setFee" class="form-control">
                     </div>
+                    <button class="btn btn-primary" onclick="saveAdminSettings()">Hifadhi Mabadiliko</button>
                 </div>
-            </section>
 
-        </main>
+                <div class="card">
+                    <div class="card-title">
+                        Orodha ya Wateja 
+                        <span style="font-size: 12px; background: #e0e0e0; padding: 4px 8px; border-radius: 20px;" id="tableCount">0</span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Jina & NIDA</th>
+                                    <th>Status & Shule</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-danger" onclick="clearAllData()" style="margin-top: 20px;">🗑️ Futa Data Zote</button>
+                    <button class="btn btn-secondary" onclick="logoutAdmin()">Toka Nje (Logout)</button>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <script src="app.js"></script>
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchMainTab('page-user', this)">
+            <span class="nav-icon">📝</span>
+            <span>Uchambuzi</span>
+        </div>
+        <div class="nav-item" onclick="switchMainTab('page-admin', this)">
+            <span class="nav-icon">🛡️</span>
+            <span>Admin</span>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. Mfumo wa Settings & Hali ya Malipo ---
+        let appSettings = JSON.parse(localStorage.getItem('boomSettings')) || { fee: 500 };
+        let currentUserData = null; 
+        let paymentVerified = false; // LINZI KUU - Haturuhusu mtu kuona majibu mpaka ilipewe true
+        let calculatedPercentage = 0; 
+
+        document.getElementById('displayFee').innerText = "Tsh " + appSettings.fee.toLocaleString();
+
+        // --- 2. Ku-Navigate Kati ya Tabs ---
+        function switchMainTab(pageId, element) {
+            document.querySelectorAll('.app-page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // --- 3. Kujaza Fomu ---
+        function processForm(event) {
+            event.preventDefault();
+            
+            currentUserData = {
+                jina: document.getElementById('inJina').value,
+                nida: document.getElementById('inNida').value,
+                rita: document.getElementById('inRita').value,
+                kozi: document.getElementById('inKozi').value,
+                shuleJina: document.getElementById('inShuleJina').value,
+                shuleAina: document.getElementById('inShuleAina').value,
+                wazazi: document.getElementById('inWazazi').value,
+                tarehe: new Date().toLocaleDateString(),
+                status: "Pending Payment"
+            };
+
+            paymentVerified = false; 
+            document.getElementById('paymentError').style.display = 'none';
+            document.getElementById('step-form').style.display = 'none';
+            document.getElementById('step-payment').style.display = 'block';
+            document.getElementById('resJina').innerText = currentUserData.jina;
+            
+            // Piga hesabu ya asilimia mapema kimya kimya
+            calculateInternalScore();
+        }
+
+        // --- 4. LANGO LA KIKWELI LA MALIPO (AZAMPAY INTERACTION) ---
+        
+        function switchPayTab(tab) {
+            document.querySelectorAll('.pay-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.pay-content').forEach(c => c.classList.remove('active'));
+            
+            if(tab === 'push') {
+                document.querySelectorAll('.pay-tab')[0].classList.add('active');
+                document.getElementById('pay-push').classList.add('active');
+            } else {
+                document.querySelectorAll('.pay-tab')[1].classList.add('active');
+                document.getElementById('pay-manual').classList.add('active');
+            }
+        }
+
+        // MAWASILIANO YA API YA AZAMPAY (Kupitia Vercel Bridge kwa Usalama)
+        function triggerAzamPayPushAPI() {
+            let phone = document.getElementById('phonePush').value;
+            if(phone.length < 10) {
+                alert("Weka namba ya simu iliyokamilika (Tsh 500 itakatwa)."); return;
+            }
+            
+            document.getElementById('btnPush').style.display = 'none';
+            document.getElementById('pushLoader').style.display = 'block';
+            
+            // Wito wa kisayansi kwenda Vercel Serverless Back-end yetu ya AzamPay
+            fetch('/api/azampay-trigger', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    phone: phone,
+                    amount: appSettings.fee,
+                    name: currentUserData.jina
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('pushLoader').style.display = 'none';
+                    document.getElementById('pushStatus').style.display = 'block';
+                    
+                    // Anza kuangalia mtandaoni kama muamala umekamilika. 
+                    // KUMBUKA: Hii inahitaji faili la `/api/azampay-check.js` upande wa Vercel!
+                    checkAzamPayStatusLoop(data.transactionId);
+                } else {
+                    alert("AzamPay Gateway Response: " + data.message);
+                    document.getElementById('pushLoader').style.display = 'none';
+                    document.getElementById('btnPush').style.display = 'block';
+                }
+            })
+            .catch(err => {
+                // LOOPHOLE CLOSED: Mfumo haujifungui tena wenyewe ukikwama!
+                alert("Imeshindwa kuwasiliana na mfumo wa malipo. Tafadhali jaribu tena.");
+                document.getElementById('pushLoader').style.display = 'none';
+                document.getElementById('btnPush').style.display = 'block';
+            });
+        }
+
+        function checkAzamPayStatusLoop(txnId) {
+            let checkCount = 0;
+            let interval = setInterval(() => {
+                checkCount++;
+                fetch(`/api/azampay-check?id=${txnId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data.status === "COMPLETED") {
+                        clearInterval(interval);
+                        authorizePayment();
+                        attemptShowResults();
+                    }
+                })
+                .catch(err => console.log("Waiting for payment...")); // Ulinzi: Usifanye chochote kikishindwa
+                if(checkCount > 12) clearInterval(interval); // Inakata tamaa baada ya dakika 1 kama hajalipa
+            }, 5000);
+        }
+
+        function verifyManualTransaction() {
+            let txn = document.getElementById('txnId').value;
+            if(txn.length < 5) {
+                alert("Ingiza Namba ya Muamala iliyokamilika."); return;
+            }
+
+            document.getElementById('btnVerify').style.display = 'none';
+            document.getElementById('verifyLoader').style.display = 'block';
+            
+            // Inatuma kwenda kwenye API yetu
+            fetch('/api/verify-manual', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ txnId: txn, nida: currentUserData.nida })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('verifyLoader').style.display = 'none';
+                document.getElementById('btnVerify').style.display = 'block';
+                if(data.valid) {
+                    authorizePayment();
+                    attemptShowResults();
+                } else { alert("Namba ya muamala haijapatikana au imeshawahi kutumika!"); }
+            })
+            .catch(err => {
+                // LOOPHOLE CLOSED
+                alert("Hitilafu imetokea wakati wa kuhakiki muamala.");
+                document.getElementById('verifyLoader').style.display = 'none';
+                document.getElementById('btnVerify').style.display = 'block';
+            });
+        }
+
+        function authorizePayment() {
+            paymentVerified = true;
+            document.getElementById('paymentError').style.display = 'none';
+            currentUserData.status = "Paid";
+        }
+
+        function copyNumber() {
+            navigator.clipboard.writeText("136854317").then(() => alert("Namba 136854317 imekopiwa!"));
+        }
+
+        // --- 5. Lango Kuu la Ulinzi (Security Gate) ---
+        function attemptShowResults() {
+            if(!paymentVerified) {
+                let errBox = document.getElementById('paymentError');
+                errBox.style.display = 'block';
+                return;
+            }
+
+            // Hifadhi kwenye hifadhi ya ndani kwa ajili ya admin panel
+            let allUsers = JSON.parse(localStorage.getItem('boomUsers')) || [];
+            allUsers.push(currentUserData);
+            localStorage.setItem('boomUsers', JSON.stringify(allUsers));
+
+            showResultsPage();
+        }
+
+        // --- 6. Hesabu na Mawasiliano na Gemini AI ---
+        function calculateInternalScore() {
+            let asilimia = 40; 
+            if (currentUserData.wazazi === "Yatima (Wote)" || currentUserData.wazazi === "Ulemavu") asilimia += 35;
+            else if (currentUserData.wazazi === "Yatima (Mmoja)" || currentUserData.wazazi === "Mzazi Mmoja") asilimia += 20;
+
+            if (currentUserData.shuleAina === "Serikali") asilimia += 15;
+            if (currentUserData.kozi === "Cluster 1") asilimia += 15;
+            else if (currentUserData.kozi === "Cluster 2") asilimia += 10;
+
+            if (currentUserData.rita === "Hapana") asilimia -= 20;
+
+            if (asilimia > 99) asilimia = 99;
+            if (asilimia < 15) asilimia = 15;
+            
+            calculatedPercentage = asilimia;
+        }
+
+        function showResultsPage() {
+            document.getElementById('step-payment').style.display = 'none';
+            document.getElementById('step-results').style.display = 'block';
+
+            let percentElement = document.getElementById('resPercent');
+            percentElement.innerText = calculatedPercentage + "%";
+            
+            if(calculatedPercentage >= 75) percentElement.style.color = "#009966"; 
+            else if (calculatedPercentage >= 50) percentElement.style.color = "#ff9900"; 
+            else percentElement.style.color = "#e74c3c";
+
+            // WITO WA KISAYANSI KWENYE GEMINI API
+            fetch('/api/gemini-advice', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userData: currentUserData, score: calculatedPercentage })
+            })
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('geminiLoader').style.display = 'none';
+                if(data.advice) {
+                    document.getElementById('resUshauri').innerHTML = data.advice;
+                } else {
+                    document.getElementById('resUshauri').innerText = "Marekebisho: Mfumo unashindwa kusoma API key. Angalia logi za Vercel Backend.";
+                }
+            })
+            .catch(err => {
+                // Fallback ya ki-Algorithm kama AI inasumbua mtandaoni
+                document.getElementById('geminiLoader').style.display = 'none';
+                document.getElementById('resUshauri').innerHTML = `<b>Ushauri wa Ndani:</b> Nafasi yako ipo katika ${calculatedPercentage}%. Hakikisha unaambatanisha nyaraka zote kwa usahihi wa hali ya juu ili kuepuka kukatwa na kamati ya HESLB.`;
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('checkForm').reset();
+            document.getElementById('step-results').style.display = 'none';
+            document.getElementById('step-form').style.display = 'block';
+            document.getElementById('btnPush').style.display = 'block';
+            document.getElementById('pushStatus').style.display = 'none';
+            document.getElementById('phonePush').value = "";
+            document.getElementById('txnId').value = "";
+            document.getElementById('geminiLoader').style.display = 'block';
+            document.getElementById('resUshauri').innerText = "Inatafuta ushauri maalum kutoka kwa AI...";
+            currentUserData = null;
+        }
+
+        // --- 7. ADMIN PANEL LOGIC ---
+        function loginAdmin() {
+            let pass = document.getElementById('adminPass').value;
+            if(pass === "1234") { // Password ya muda (unaweza kubadili)
+                document.getElementById('admin-login').style.display = "none";
+                document.getElementById('admin-dashboard').style.display = "block";
+                document.getElementById('adminPass').value = ""; 
+                loadAdminData();
+            } else { alert("Password Sio Sahihi!"); }
+        }
+
+        function logoutAdmin() {
+            document.getElementById('admin-dashboard').style.display = "none";
+            document.getElementById('admin-login').style.display = "block";
+        }
+
+        function loadAdminData() {
+            let allUsers = JSON.parse(localStorage.getItem('boomUsers')) || [];
+            let totalWatu = allUsers.length; 
+            let totalPesa = totalWatu * Number(appSettings.fee);
+            
+            document.getElementById('dashUsers').innerText = totalWatu;
+            document.getElementById('dashRevenue').innerText = "Tsh " + totalPesa.toLocaleString();
+            document.getElementById('tableCount').innerText = totalWatu;
+            document.getElementById('setFee').value = appSettings.fee;
+
+            let tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = ""; 
+            
+            allUsers.slice().reverse().forEach(user => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <b style="color:#1e3c72; font-size:13px;">${user.jina}</b><br>
+                        <span style="color:#777; font-size:11px;">NIDA: ${user.nida}</span>
+                    </td>
+                    <td>
+                        <span style="background:#00cc88; color:white; padding:2px 6px; border-radius:4px; font-size:10px;">LIPWA ✅</span><br>
+                        <span style="font-size:11px; color:#555;">${user.shuleJina}</span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if(allUsers.length === 0) tbody.innerHTML = "<tr><td colspan='2' style='text-align:center; color:#888;'>Hakuna wateja waliolipia mpaka sasa.</td></tr>";
+        }
+
+        function saveAdminSettings() {
+            let newFee = document.getElementById('setFee').value;
+            if(newFee === "" || newFee <= 0) return alert("Weka kiasi halali.");
+            
+            appSettings.fee = Number(newFee);
+            localStorage.setItem('boomSettings', JSON.stringify(appSettings));
+            document.getElementById('displayFee').innerText = "Tsh " + appSettings.fee.toLocaleString();
+            alert("Mabadiliko yamehifadhiwa! Ada mpya ni Tsh " + appSettings.fee);
+            loadAdminData(); 
+        }
+
+        function clearAllData() {
+            if(confirm("ONYO: Unataka kusafisha data zote za mapato?")) {
+                localStorage.removeItem('boomUsers');
+                alert("Data zote zimefutwa.");
+                loadAdminData(); 
+            }
+        }
+
+        // --- 8. PWA INSTALLATION LOGIC ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('PWA Connected'))
+                    .catch(err => console.log('PWA Error', err));
+            });
+        }
+
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+
+        installBtn.addEventListener('click', (e) => {
+            installBtn.style.display = 'none';
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+        });
+    </script>
 </body>
-    </html>
-    
+</html>
